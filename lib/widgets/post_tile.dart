@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:wp_client/main.dart';
 
 class PostTile extends StatelessWidget {
   final Map<String, dynamic> post;
@@ -7,11 +8,12 @@ class PostTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("post: $post");
+    // print("post: $post");
     return Flexible(
       child: GestureDetector(
         onTap: () {
           print("sub nav to post ${post["id"]}");
+          postsGlobalNavKey.currentState.pushNamed("post", arguments: post);
         },
         child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.45,
@@ -26,13 +28,15 @@ class PostTile extends StatelessWidget {
                       colors: <Color>[Colors.redAccent, Colors.yellow]),
                 ),
                 height: 200,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    HtmlWidget("<h2>${post["title"]["rendered"]}</h2>"),
-                    HtmlWidget("${post["content"]["rendered"]}"),
-                  ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      HtmlWidget("<h5>${post["title"]["rendered"]}</h5>"),
+                      HtmlWidget("${post["content"]["rendered"]}"),
+                    ],
+                  ),
                 )),
           ),
         ),

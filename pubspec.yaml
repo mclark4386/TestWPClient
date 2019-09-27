@@ -22,7 +22,7 @@ dependencies:
   http: ^0.12.0+2
   
   flutter_json_widget: ^1.0.2
-  flutter_widget_from_html: ^0.2.3
+  flutter_widget_from_html: ^0.2.3+1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

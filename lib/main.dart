@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:wp_client/api_browser.dart';
-import 'package:wp_client/posts.dart';
+import 'package:wp_client/widgets/post.dart';
+import 'package:wp_client/widgets/posts_index.dart';
 
 void main() => runApp(MyApp());
+var postsGlobalNavKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -28,37 +30,57 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final pc = PageController(initialPage: 0);
-  var currentIndex =0;
+  final pc = PageController(initialPage: 0, keepPage: true);
+  var currentIndex = 0;
+  final pages = <Widget>[
+    APIBrowserView(),
+    Navigator(
+      key: postsGlobalNavKey,
+      onGenerateRoute: (settings) {
+        print("sub-nav: ${settings.name}");
+        if (settings.name == "post") {
+          print("route to post!: ${Map<String,dynamic>.from(settings.arguments)["id"]}");
+          return MaterialPageRoute(
+            builder: (context) => PostView(post: settings.arguments),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (context) => PostsIndex(),
+        );
+      },
+    ),
+  ];
+  final navItems = <BottomNavigationBarItem>[
+    BottomNavigationBarItem(
+      icon: Icon(Icons.find_in_page),
+      title: Text("API Browser"),
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.description),
+      title: Text("Posts"),
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    pc.addListener(() => setState(() => currentIndex = pc.page.toInt()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: PageView(
         controller: pc,
-        children: <Widget>[
-          APIBrowserView(),
-          PostsView(),
-        ],
+        children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.find_in_page),
-            title: Text("API Browser"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.description),
-            title: Text("Posts"),
-          ),
-        ],
-        onTap: (i){
+        items: navItems,
+        onTap: (i) {
           pc.jumpToPage(i);
           setState(() {
-          currentIndex = i;
+            currentIndex = i;
           });
         },
       ),

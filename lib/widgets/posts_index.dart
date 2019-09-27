@@ -29,16 +29,19 @@ class _PostsIndexState extends State<PostsIndex> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Posts"),
+      ),
       body: FutureBuilder(
         future: gettingPosts,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData || snapshot.hasError) {
-            print(
-                "snapshot:\n  data: ${snapshot.data}\n  error:${snapshot.error}");
+            // print(
+                // "snapshot:\n  data: ${snapshot.data}\n  error:${snapshot.error}");
             return Center(child: Text("Loading..."));
           }
           posts = jsonDecode(snapshot.data.body);
-          print("building all posts again: $posts");
+          // print("building all posts again: $posts");
           return Flex(
             children: [
               ...posts.map((p) => PostTile(post: p)),

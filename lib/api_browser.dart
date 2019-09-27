@@ -20,7 +20,11 @@ class _APIBrowserViewState extends State<APIBrowserView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("API Browser"),
+      ),
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Padding(
@@ -80,7 +84,7 @@ class _APIBrowserViewState extends State<APIBrowserView> {
                   value: "wp/v2/search",
                 ),
               ],
-              onChanged: (value){
+              onChanged: (value) {
                 urlController.text = "$value";
                 setState(() {
                   selectedValue = value;
@@ -113,7 +117,7 @@ class _APIBrowserViewState extends State<APIBrowserView> {
         },
         tooltip: 'Go',
         child: Icon(Icons.forward),
-      ), 
-      );
+      ),
+    );
   }
 }
