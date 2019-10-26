@@ -13,7 +13,8 @@ class PostTile extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           print("sub nav to post ${post["id"]}");
-          postsGlobalNavKey.currentState.pushNamed("post", arguments: post);
+          // postsGlobalNavKey.currentState
+          Navigator.of(context).pushNamed("post", arguments: post);
         },
         child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.45,

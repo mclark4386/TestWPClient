@@ -5,6 +5,8 @@ import 'package:wp_client/widgets/posts_index.dart';
 
 void main() => runApp(MyApp());
 var postsGlobalNavKey = GlobalKey<NavigatorState>();
+var browserGlobalNavKey = GlobalKey<NavigatorState>();
+var pageNavKeys = [browserGlobalNavKey, postsGlobalNavKey];
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -33,13 +35,19 @@ class _MyHomePageState extends State<MyHomePage> {
   final pc = PageController(initialPage: 0, keepPage: true);
   var currentIndex = 0;
   final pages = <Widget>[
-    APIBrowserView(),
+    Navigator(
+      key: browserGlobalNavKey,
+      onGenerateRoute: (settings) => MaterialPageRoute(
+        builder: (context) => APIBrowserView(),
+      ),
+    ),
     Navigator(
       key: postsGlobalNavKey,
       onGenerateRoute: (settings) {
         print("sub-nav: ${settings.name}");
         if (settings.name == "post") {
-          print("route to post!: ${Map<String,dynamic>.from(settings.arguments)["id"]}");
+          print(
+              "route to post!: ${Map<String, dynamic>.from(settings.arguments)["id"]}");
           return MaterialPageRoute(
             builder: (context) => PostView(post: settings.arguments),
           );
@@ -69,20 +77,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView(
-        controller: pc,
-        children: pages,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        items: navItems,
-        onTap: (i) {
-          pc.jumpToPage(i);
-          setState(() {
-            currentIndex = i;
-          });
-        },
+    return WillPopScope(
+      onWillPop: () async =>
+          !await pageNavKeys[currentIndex].currentState.maybePop(),
+      child: Scaffold(
+        body: PageView(
+          controller: pc,
+          children: pages,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: currentIndex,
+          items: navItems,
+          onTap: (i) {
+            pc.jumpToPage(i);
+            setState(() {
+              currentIndex = i;
+            });
+          },
+        ),
       ),
     );
   }
