@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final pc = PageController(initialPage: 0, keepPage: true);
+  PageController pc;
   var currentIndex = 0;
   final pages = <Widget>[
     Navigator(
@@ -72,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    pc = PageController(initialPage: 0, keepPage: true);
     pc.addListener(() => setState(() => currentIndex = pc.page.toInt()));
   }
 
@@ -84,15 +85,16 @@ class _MyHomePageState extends State<MyHomePage> {
         body: PageView(
           controller: pc,
           children: pages,
+          onPageChanged: (int page)=>setState(()=> currentIndex = page),
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: currentIndex,
           items: navItems,
           onTap: (i) {
-            pc.jumpToPage(i);
             setState(() {
               currentIndex = i;
             });
+            pc.jumpToPage(i);
           },
         ),
       ),
